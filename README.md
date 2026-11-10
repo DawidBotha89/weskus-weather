@@ -1,0 +1,15 @@
+# West Coast weather
+
+A public hourly update for 15 Western Cape towns. The site reads [the latest snapshot](https://raw.githubusercontent.com/DawidBotha89/weskus-weather/main/data/latest.json). All timestamps in the file are UTC. The site displays South African time.
+
+* Weather comes from open ECMWF IFS surface fields. The collector interpolates four neighbouring grid cells to each town, calculates humidity and wind, and converts accumulated rainfall to an interval amount. The twice-daily seven-day forecast uses a 0.25° grid. It cannot resolve an individual beach or valley. [ECMWF Open Data](https://www.ecmwf.int/en/forecasts/datasets/open-data) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
+* The comparison baseline is a snapshot of the existing Lekker Weskus forecast powered by MET Norway. Both forecasts share ECMWF ancestry. Agreement between them does not establish local accuracy. [MET Norway](https://api.met.no/doc/locationforecast/datamodel) · [attribution and licence](https://api.met.no/doc/License)
+* Weather observations come from named South African Weather Service stations on the WMO WIS2 core feed. Each observation carries its time, distance and source. Coastal exposure matters even when the gauge is nearby. [SAWS](https://wis.weathersa.co.za/) · [WIS2 public cache](https://registry.opendata.aws/wis2-global-cache/)
+* NOAA GFS Wave provides primary swell height and period. NOAA OISST provides daily offshore sea-surface temperature. The selected cells and distances are included. These products describe the open sea and have no beach, lagoon or river thermometer. [Wave model](https://polar.ncep.noaa.gov/waves/) · [OISST](https://www.ncei.noaa.gov/products/optimum-interpolation-sst)
+* The website calculates astronomical coastal tides separately from TICON-4 constituents using Neaps. Neither this feed nor the site supplies validated tides inside Langebaan Lagoon or the Berg River. [TICON-4](https://doi.org/10.17882/109129)
+
+## Running and verifying
+
+Use Python 3.12+, install `requirements.txt`, run `python -m unittest discover -p '*test*.py'`, then `python update.py --data data`. Keep this directory between runs. The public workflow runs at minute 24 each hour on a standard Ubuntu runner. A schedule can start late. A failed source retains its own timestamp and other sources can still advance. The workflow reports a failed refresh in its [run history](https://github.com/DawidBotha89/weskus-weather/actions/workflows/forecast.yml).
+
+For each town and valid time we freeze the first pair seen 6–24 hours ahead. Both predictions must be available together. We match the exact UTC time to a named station within 15 km, retain a rolling 30 days, and compute mean absolute error separately for temperature and wind. The verification ledger records the issue dates, collection time, original predictions and matched observations. An empty sample has no error estimate. The trial can have gaps when observations, baselines or scheduled runs are missing. Keep interpreting different leads, local exposures and seasons separately before choosing a forecast for the site.
