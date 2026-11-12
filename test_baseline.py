@@ -3,8 +3,9 @@ from io import BytesIO
 import json
 import unittest
 from unittest.mock import patch
+from datetime import datetime, timezone, timedelta
 
-from baseline import read_town
+from baseline import read_town, update_baseline
 
 
 class BaselineTests(unittest.TestCase):
@@ -19,3 +20,18 @@ class BaselineTests(unittest.TestCase):
         self.assertEqual([(r["rain_mm"], r["rain_period_h"]) for r in rows], [(0, 1), (3.2, 6), (None, None)])
         self.assertIsNone(rows[2]["wind_from_deg"])
         self.assertIsNone(rows[2]["pressure_hpa"])
+
+    def test_failed_or_stale_cached_town_is_refetched_during_retry(self):
+        now = datetime.now(timezone.utc)
+        row = {"updated_utc": now.isoformat(), "fetched_utc": now.isoformat(),
+               "stale": False, "hours": [{"valid_utc": now.isoformat()}]}
+        previous = {"towns": {"a": row}, "refresh_errors": ["a"]}
+        with patch("baseline.TOWNS", {"a": [-32.8, 18]}), patch("baseline.read_town", return_value=row) as reader:
+            result = update_baseline(previous)
+            reader.assert_called_once()
+            self.assertEqual(result["refresh_errors"], [])
+        previous["refresh_errors"] = []
+        previous["towns"]["a"] = {**row, "updated_utc": (now - timedelta(days=2)).isoformat()}
+        with patch("baseline.TOWNS", {"a": [-32.8, 18]}), patch("baseline.read_town", return_value=row) as reader:
+            update_baseline(previous)
+            reader.assert_called_once()
