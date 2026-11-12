@@ -64,6 +64,33 @@ begin
   if s.status<>'feed_unavailable' or s.success_utc is distinct from now()-interval '3 hours' then
     raise exception 'Failed HTTP read concealed last successful publication';
   end if;
+
+  -- A recent prior success must not hide a feed error when dispatch is accepted.
+  update weather_ops.updater set success_utc=now()-interval '30 minutes',
+    status='refresh_requested',dispatch_status='accepted';
+  if (public.weather_update_status()->>'healthy')::boolean then
+    raise exception 'Dispatch acceptance concealed a feed failure';
+  end if;
+
+  -- Reading an older complete feed must not erase a newer dispatch failure.
+  fixture := jsonb_set(fixture,'{health,last_success_utc}',to_jsonb(now()));
+  fixture := jsonb_set(fixture,'{refresh_errors}','[]'::jsonb);
+  update net._http_response set status_code=200,content=fixture::text where id=-910201;
+  update weather_ops.updater set fetch_request_id=-910201,dispatch_status='failed',
+    last_dispatch_at=now()+interval '1 minute';
+  perform weather_ops.tick();
+  select * into s from weather_ops.updater where id;
+  if s.feed_status<>'complete' or s.dispatch_status<>'failed'
+    or (public.weather_update_status()->>'healthy')::boolean then
+    raise exception 'Old readable feed concealed dispatch failure';
+  end if;
+
+  -- Only a complete success after the last request clears that dispatch error.
+  update weather_ops.updater set fetch_request_id=-910201,last_dispatch_at=now()-interval '1 minute';
+  perform weather_ops.tick();
+  if not (public.weather_update_status()->>'healthy')::boolean then
+    raise exception 'New complete publication did not confirm dispatch recovery';
+  end if;
 end;
 $$;
 rollback;

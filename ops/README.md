@@ -24,6 +24,8 @@ The installed HTTP extension is version 1.6. Construct headers with typed `weath
 
 A healthy status requires a complete publication within 75 minutes and a watchdog check within ten minutes. A fresh attempt carrying failed sources does not satisfy this condition. Use the feed's `health.warnings` to inspect missing or old station observations separately.
 
+Feed and dispatch health are tracked separately. An accepted dispatch cannot hide a failed feed check, and an old readable feed cannot hide a newer dispatch failure. A complete publication after the last dispatch confirms recovery. Public HTTP queue failures are caught before authenticated dispatch so they cannot roll back its attempt bookkeeping. As with any external side effect, a database crash at the exact dispatch/commit boundary can still leave uncertain delivery; GitHub concurrency serializes duplicate runs.
+
 To pause only this watchdog, set its control row's `enabled` field to false. The existing GitHub schedule continues to work. No paid weather APIs or additional subscription is required. The system still depends on the existing Supabase service, GitHub runner availability, provider uptime and a valid GitHub credential.
 
 The current fine-grained token grants Actions read/write and required Metadata read access on this repository only, with no user permissions. It expires on **10 February 2027**. Rotate it in GitHub and replace the named Vault secret before then. A revoked or expired token produces a failed dispatch and an unhealthy status; this status endpoint does not send email or SMS alerts.

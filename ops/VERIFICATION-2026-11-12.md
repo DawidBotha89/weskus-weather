@@ -22,6 +22,8 @@ Only the watchdog's internal timestamps were altered to represent an overdue pub
 
 Rollback-based SQL tests passed for disabled operation, startup without an observation, success suppression, degraded-publication timestamps, failed HTTP reads and the retry cap. Fixtures cannot dispatch authenticated requests. Public-role access to the private scheduler and HTTP schemas is denied. No authenticated GitHub request enters the shared HTTP queue and no token appears in weather event details. The public REST status endpoint was tested with the project's publishable key.
 
+Independent review identified two edge cases that were corrected before sign-off: dispatch acceptance hiding a feed failure, and a public HTTP enqueue failure rolling back already accepted dispatch bookkeeping. Feed and dispatch statuses are now independent, enqueue failures are caught before the external dispatch, and new SQL regressions prove that recent-but-old successful data cannot hide either failure. Only a complete publication after the last dispatch confirms its recovery. The expanded rollback tests passed on the live database.
+
 The security advisor notices for the fixed, read-only public status function and private RLS tables are intentional; see [operation notes](README.md). Shared application permissions were not changed.
 
 ## Limits

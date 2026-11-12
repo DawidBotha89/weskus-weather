@@ -20,8 +20,14 @@ create table if not exists weather_ops.updater (
   last_missed_hour timestamptz,
   missed_updates integer not null default 0,
   status text not null default 'starting',
+  feed_status text not null default 'unknown',
+  dispatch_status text not null default 'idle',
   last_http_status integer
 );
+-- Allow the reviewed script to upgrade the first deployed scheduler version.
+alter table weather_ops.updater
+  add column if not exists feed_status text not null default 'unknown',
+  add column if not exists dispatch_status text not null default 'idle';
 alter table weather_ops.updater enable row level security;
 revoke all on weather_ops.updater from public, anon, authenticated;
 insert into weather_ops.updater (id) values (true) on conflict do nothing;
@@ -78,11 +84,14 @@ begin
           end if;
           s.published_utc := published;
           s.success_utc := greatest(s.success_utc,successful);
+          if successful >= s.last_dispatch_at then s.dispatch_status := 'confirmed'; end if;
         end if;
         s.status := case when coalesce(payload->'refresh_errors','[]'::jsonb)='[]'::jsonb
           then 'checked' else 'source_failure' end;
+        s.feed_status := case when s.status='checked' then 'complete' else 'degraded' end;
       exception when others then
         s.status := 'feed_unavailable';
+        s.feed_status := 'unavailable';
         insert into weather_ops.events(event,detail)
           values ('feed_unavailable',jsonb_build_object('http_status',reply.status_code));
       end;
@@ -90,6 +99,7 @@ begin
       s.fetch_request_id := null;
       s.last_checked_at := now();
       s.status := 'feed_unavailable';
+      s.feed_status := 'unavailable';
       insert into weather_ops.events(event) values ('feed_response_missing');
     end if;
   end if;
@@ -107,8 +117,26 @@ begin
       ('missed_hour',jsonb_build_object('hour',hour_start,'last_success_utc',s.success_utc));
   end if;
 
-  -- Minute 2 gives the regular hourly trigger a defined target.
-  -- A 20-minute workflow timeout and 25-minute spacing prevent overlapping retries.
+  -- Public feed requests cannot undo an accepted GitHub dispatch.
+  -- Queue and housekeeping work happens before the synchronous external side effect.
+  if s.fetch_request_id is null and (s.last_fetch_at is null or s.last_fetch_at <= now()-interval '5 minutes') then
+    s.last_fetch_at := date_trunc('minute',now());
+    begin
+      s.fetch_request_id := net.http_get(
+        url := 'https://lekker-weskus.vercel.app/weather-shadow/latest.json',
+        headers := '{"Accept":"application/json","Cache-Control":"no-cache"}'::jsonb,
+        timeout_milliseconds := 15000);
+    exception when others then
+      s.status := 'feed_unavailable';
+      s.feed_status := 'unavailable';
+      s.last_checked_at := now();
+      insert into weather_ops.events(event) values ('feed_enqueue_failed');
+    end;
+  end if;
+  delete from weather_ops.events where occurred_at < now()-interval '30 days';
+
+  -- Minute 2 is the hourly target; retries are spaced 25 minutes apart.
+  -- GitHub concurrency serializes runs, including dispatches delayed in its queue.
   if coalesce(s.success_utc,'epoch') < hour_start and now() >= hour_start+interval '2 minutes'
       and s.last_checked_at is not null and s.attempts < 3
       and (s.last_dispatch_at is null or s.last_dispatch_at < now()-interval '25 minutes'
@@ -117,6 +145,7 @@ begin
       where name='weather_github_dispatch_token';
     if credential is null or length(credential)<20 then
       s.status := 'credential_required';
+      s.dispatch_status := 'credential_required';
     else
       s.last_dispatch_at := now();
       s.attempts := s.attempts+1;
@@ -135,11 +164,13 @@ begin
             ('User-Agent','Weskus-weather-watchdog')::weather_http.http_header],
           'application/json','{"ref":"main"}')::weather_http.http_request);
         s.status := case when s.last_http_status=204 then 'refresh_requested' else 'dispatch_failed' end;
+        s.dispatch_status := case when s.last_http_status=204 then 'accepted' else 'failed' end;
         insert into weather_ops.events(event,detail) values
           (case when s.last_http_status=204 then 'dispatch_accepted' else 'dispatch_failed' end,
            jsonb_build_object('http_status',s.last_http_status,'attempt',s.attempts));
       exception when others then
         s.status := 'dispatch_failed';
+        s.dispatch_status := 'failed';
         s.last_http_status := null;
         insert into weather_ops.events(event) values ('dispatch_connection_failed');
       end;
@@ -147,21 +178,13 @@ begin
     end if;
   end if;
 
-  if s.fetch_request_id is null and (s.last_fetch_at is null or s.last_fetch_at <= now()-interval '5 minutes') then
-    s.fetch_request_id := net.http_get(
-      url := 'https://lekker-weskus.vercel.app/weather-shadow/latest.json',
-      headers := '{"Accept":"application/json","Cache-Control":"no-cache"}'::jsonb,
-      timeout_milliseconds := 15000);
-    s.last_fetch_at := now();
-  end if;
   update weather_ops.updater set
     last_fetch_at=s.last_fetch_at,fetch_request_id=s.fetch_request_id,last_checked_at=s.last_checked_at,
     published_utc=s.published_utc,success_utc=s.success_utc,last_dispatch_at=s.last_dispatch_at,
     dispatch_hour=s.dispatch_hour,attempts=s.attempts,
     last_missed_hour=s.last_missed_hour,missed_updates=s.missed_updates,status=s.status,
-    last_http_status=s.last_http_status
+    last_http_status=s.last_http_status,feed_status=s.feed_status,dispatch_status=s.dispatch_status
     where id;
-  delete from weather_ops.events where occurred_at < now()-interval '30 days';
 end;
 $$;
 revoke all on function weather_ops.tick() from public,anon,authenticated;
@@ -173,7 +196,8 @@ returns jsonb language sql security definer set search_path = '' as $$
     'enabled',enabled,'checked_utc',last_checked_at,'published_utc',published_utc,
     'last_success_utc',success_utc,'last_dispatch_utc',last_dispatch_at,
     'attempts_this_hour',attempts,'missed_hours',missed_updates,'last_action',status,
-    'healthy',coalesce(enabled and status not in ('feed_unavailable','source_failure','dispatch_failed','credential_required')
+    'feed_status',feed_status,'dispatch_status',dispatch_status,'last_dispatch_http_status',last_http_status,
+    'healthy',coalesce(enabled and feed_status='complete' and dispatch_status not in ('failed','credential_required')
       and success_utc >= now()-interval '75 minutes'
       and last_checked_at >= now()-interval '10 minutes',false),
     'hourly_target_minute_utc',2,'retry_after_minutes',25,'maximum_attempts_per_hour',3)
