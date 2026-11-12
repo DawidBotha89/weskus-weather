@@ -15,7 +15,8 @@ Only the watchdog's internal timestamps were altered to represent an overdue pub
 * At 19:41 UTC (21:41 SAST), the real cron detected the simulated overdue hour and attempted dispatch. This exposed an HTTP extension compatibility issue, which was corrected using typed header arrays supported by installed version 1.6.
 * The failed attempt's timestamp was moved back 26 minutes to exercise retry eligibility without waiting 25 minutes. At 19:44 UTC, the real cron recorded `reason=retry`, attempt 2, and GitHub accepted it with HTTP 204.
 * [Run 43293169011](https://github.com/DawidBotha89/weskus-weather/actions/runs/43293169011) succeeded and published at **19:44:54 UTC / 21:44:54 SAST**. The production JSON returned all 15 atmospheric towns with complete health. Chrome rendered “Published 12 Nov 2026, 21:44 SAST” with station, humidity, forecast, marine and coastal-tide sections.
-* Watchdog recovery recognition and the next unmodified hourly boundary are still being checked; this document will be completed with their evidence before release.
+* At **19:50 UTC / 21:50 SAST**, a subsequent real cron check read that publication from the production site and returned `healthy=true`. No manual acknowledgement or success timestamp was supplied. The cumulative missed-hour counter includes this one labelled drill.
+* The next unmodified hourly boundary is still being checked; this document will be completed with its evidence before release.
 
 ## Safeguards
 
