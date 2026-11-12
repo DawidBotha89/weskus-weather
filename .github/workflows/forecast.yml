@@ -11,7 +11,7 @@ concurrency:
 jobs:
   refresh:
     runs-on: ubuntu-latest
-    timeout-minutes: 35
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v4
         with:
@@ -28,7 +28,7 @@ jobs:
         continue-on-error: true
         run: python -u update.py
       - name: Publish available readings and verification ledger
-        if: hashFiles('data/latest.json') != ''
+        if: steps.collect.outputs.snapshot_written == 'true'
         run: |
           git add -- data/latest.json data/verification.json
           if ! git diff --cached --quiet; then

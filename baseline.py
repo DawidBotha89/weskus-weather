@@ -1,5 +1,6 @@
 """Save the same public forecast the site serves. The function does its own upstream caching."""
 import datetime as dt
+from concurrent.futures import ThreadPoolExecutor
 import json
 import logging
 import math
@@ -48,16 +49,31 @@ def read_town(lat, lon):
 
 def update_baseline(previous):
     towns = dict((previous or {}).get("towns", {}))
+    failed_before = set((previous or {}).get("refresh_errors", []))
     errors = []
-    for slug, (lat, lon) in TOWNS.items():
-        previous_fetch = towns.get(slug, {}).get("fetched_utc")
-        if previous_fetch and dt.datetime.now(dt.timezone.utc) - dt.datetime.fromisoformat(previous_fetch) < dt.timedelta(minutes=45):
-            continue
+    now = dt.datetime.now(dt.timezone.utc)
+
+    def update(slug):
+        old = towns.get(slug, {})
         try:
-            towns[slug] = read_town(lat, lon)
-        except (OSError, ValueError, KeyError) as exc:
+            if (slug not in failed_before and old.get("hours") and not old.get("stale")
+                and dt.timedelta(0) <= now - dt.datetime.fromisoformat(old["fetched_utc"]) < dt.timedelta(minutes=45)
+                and dt.timedelta(0) <= now - dt.datetime.fromisoformat(old["updated_utc"]) <= dt.timedelta(hours=24)):
+                return slug, old, False
+        except (KeyError, TypeError, ValueError):
+            pass
+        try:
+            return slug, read_town(*TOWNS[slug]), False
+        except (OSError, ValueError, KeyError, TypeError) as exc:
             logging.warning("Baseline %s: %s", slug, exc)
-            errors.append(slug)
+            return slug, old, True
+
+    with ThreadPoolExecutor(max_workers=4) as pool:
+        for slug, result, failed in pool.map(update, TOWNS):
+            if result:
+                towns[slug] = result
+            if failed:
+                errors.append(slug)
     return {"towns": towns, "credit": "MET Norway, CC BY 4.0, via the Lekker Weskus wind-forecast service",
             "refresh_errors": errors,
             "source_url": "https://api.met.no/doc/License"}
