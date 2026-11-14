@@ -37,7 +37,38 @@ class UpdateTests(unittest.TestCase):
         self.clock = patch.object(update.dt, "datetime", wraps=datetime).start()
         self.clock.now.return_value = NOW
         self.sleep = patch.object(update.time, "sleep").start()
+        self.estuary = patch.object(update, "update_estuary", return_value={"health": {"status": "complete"}}).start()
         self.addCleanup(patch.stopall)
+
+    def test_optional_estuary_failure_retains_ledger_and_does_not_stop_weather(self):
+        def failed(previous, ledger, now):
+            ledger["partial"] = "must not publish"
+            raise OSError("research source failed")
+        self.estuary.side_effect = failed
+        feed = fixtures()
+        feed["estuary"] = {"berg": {"hours": []}}
+        collectors = {name: (lambda old, result=result: deepcopy(result))
+                      for name, result in fixtures().items()}
+        with TemporaryDirectory() as directory, patch.dict(update.COLLECTORS, collectors, clear=True):
+            folder = Path(directory)
+            update.write(folder / "latest.json", feed)
+            update.write(folder / "estuary-verification.json", {"original": {}})
+            self.assertEqual(update.main(folder), 0)
+            published = update.load(folder / "latest.json")
+            self.assertEqual(published["health"]["status"], "complete")
+            self.assertEqual(published["estuary"]["health"]["status"], "degraded")
+            self.assertEqual(published["estuary"]["berg"], feed["estuary"]["berg"])
+            self.assertEqual(update.load(folder / "estuary-verification.json"), {"original": {}})
+
+    def test_failed_tide_runtime_check_disables_only_research(self):
+        collectors = {name: (lambda old, result=result: deepcopy(result))
+                      for name, result in fixtures().items()}
+        with TemporaryDirectory() as directory, patch.dict(update.COLLECTORS, collectors, clear=True), \
+                patch.dict(update.os.environ, {"ESTUARY_DISABLED": "1"}):
+            folder = Path(directory)
+            self.assertEqual(update.main(folder), 0)
+            self.estuary.assert_not_called()
+            self.assertEqual(update.load(folder / "latest.json")["estuary"]["health"]["status"], "degraded")
 
     def test_retry_mutation_isolation_and_partial_progress(self):
         previous = fixtures()["baseline"]

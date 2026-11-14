@@ -1,0 +1,9 @@
+{
+  "name": "weskus-weather-coastal-boundary",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Pinned astronomical coastal boundary for experimental reach water-level comparison",
+  "scripts": { "test": "node --test test_boundary.cjs" },
+  "engines": { "node": ">=22" },
+  "dependencies": { "@neaps/tide-predictor": "0.11.0" }
+}

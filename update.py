@@ -15,6 +15,7 @@ from stations import STATIONS, update_stations
 from verification import score
 from calibration import calibrated_candidate
 from candidate_verification import score_candidate
+from estuary_trial import update as update_estuary
 
 COLLECTORS = {"atmosphere": update_forecast, "baseline": update_baseline,
               "marine": update_marine, "stations": update_stations}
@@ -156,6 +157,7 @@ def main(folder):
     previous = load(folder / "latest.json")
     ledger = load(folder / "verification.json")
     candidate_ledger = load(folder / "candidate-verification.json")
+    estuary_ledger = load(folder / "estuary-verification.json")
     feed = {"schema_version": 1, "centres": TOWNS}
     attempted = utc(dt.datetime.now(dt.timezone.utc))
     attempts, errors = {}, {}
@@ -182,13 +184,28 @@ def main(folder):
     model = load(Path(__file__).parent / "research/geelbek-20261114/geelbek-model.json")
     feed["calibration"] = calibrated_candidate(feed["atmosphere"], model, now)
     feed["candidate_scores"] = score_candidate(feed, candidate_ledger, now)
+    # Research is isolated: unavailable satellite/gauge research must not halt
+    # the established weather sources or erase their successful hourly update.
+    try:
+        if os.environ.get("ESTUARY_DISABLED") == "1":
+            raise RuntimeError("Optional tide runtime verification failed")
+        trial_ledger = deepcopy(estuary_ledger)
+        feed["estuary"] = update_estuary(previous.get("estuary", {}), trial_ledger, now)
+        estuary_ledger = trial_ledger
+    except Exception:
+        logging.exception("Estuary research update failed; retaining its previous dated output")
+        feed["estuary"] = deepcopy(previous.get("estuary", {}))
+        feed["estuary"]["health"] = {"status": "degraded", "error": "research_update_failed"}
     feed["refresh_errors"] = sorted(errors)
     feed["health"] = {"attempted_utc": attempted,
                       "last_success_utc": utc(now) if not errors else previous.get("health", {}).get("last_success_utc"),
                       "status": "degraded" if errors else "complete", "attempts": attempts,
                       "errors": errors, "warnings": station_warnings(feed["stations"], now)}
+    if feed["estuary"].get("health", {}).get("status") != "complete":
+        feed["health"]["warnings"].append({"source": "estuary", "code": "research_update_failed"})
     write(folder / "verification.json", ledger)
     write(folder / "candidate-verification.json", candidate_ledger)
+    write(folder / "estuary-verification.json", estuary_ledger)
     write(folder / "latest.json", feed)
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:

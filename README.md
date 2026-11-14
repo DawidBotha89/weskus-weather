@@ -1,5 +1,11 @@
 # West Coast weather
 
+## Optional estuary experiment, 14 November 2026
+
+The hourly collector now also freezes Berg River reach-height predictions for future satellite checks. Install Node 22+, run `npm ci --ignore-scripts` and `npm test` for this component, alongside the Python instructions below. All four ledgers/snapshot files publish together. A failed research component does not stop weather publication. NASA is checked every six hours; satellite observations themselves are sparse, quality-flagged and **not current tide-gauge readings**. No local high/low times are supplied. [Method, licence, historical results and validation gates](research/ESTUARY-TRIAL.md).
+
+The continued search found no additional station feed meeting freshness, location and reuse requirements. Five accepted town proxies remain; the other ten have explicit gaps. [Town-by-town research and next routes](research/REMAINING-STATIONS-20261114.md). The existing MET forecast and coastal tide remain the default until independent local evidence supports a reviewed change.
+
 A public hourly update for 15 Western Cape towns. The site reads [the latest snapshot](https://raw.githubusercontent.com/DawidBotha89/weskus-weather/main/data/latest.json). All timestamps in the file are UTC. The site displays South African time.
 
 * Weather comes from open ECMWF IFS surface fields. The collector interpolates four neighbouring grid cells to each town, calculates humidity and wind, and converts accumulated rainfall to an interval amount. The twice-daily seven-day forecast uses a 0.25° grid. It cannot resolve an individual beach or valley. [ECMWF Open Data](https://www.ecmwf.int/en/forecasts/datasets/open-data) · [CC BY 4.0](https://creativecommons.org/licenses/by/4.0/)
