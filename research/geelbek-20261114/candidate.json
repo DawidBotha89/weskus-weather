@@ -1,0 +1,70 @@
+{
+  "status": "experimental station proxy",
+  "target": {
+    "town": "langebaan",
+    "station_id": "0-20000-0-68811",
+    "station_name": "Geelbek AWS",
+    "latitude": -33.18334,
+    "longitude": 18.11666,
+    "distance_km": 12.71,
+    "scope": "Geelbek station proxy using the Langebaan town forecast"
+  },
+  "towns": {
+    "langebaan": [
+      {
+        "valid_utc": "2026-11-14T21:00:00Z",
+        "issued_utc": "2026-11-14T19:58:55Z",
+        "source_run_utc": "2026-11-14T00:00:00Z",
+        "temperature_c": 13.31,
+        "wind_speed_ms": 4.08,
+        "station_id": "0-20000-0-68811",
+        "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+        "training_cutoff_utc": "2026-11-14T19:02:21Z"
+      },
+      {
+        "valid_utc": "2026-11-15T03:00:00Z",
+        "issued_utc": "2026-11-14T19:58:55Z",
+        "source_run_utc": "2026-11-14T00:00:00Z",
+        "temperature_c": 11.44,
+        "wind_speed_ms": 2.415,
+        "station_id": "0-20000-0-68811",
+        "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+        "training_cutoff_utc": "2026-11-14T19:02:21Z"
+      },
+      {
+        "valid_utc": "2026-11-15T09:00:00Z",
+        "issued_utc": "2026-11-14T19:58:55Z",
+        "source_run_utc": "2026-11-14T00:00:00Z",
+        "temperature_c": 21.655,
+        "wind_speed_ms": 6.343,
+        "station_id": "0-20000-0-68811",
+        "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+        "training_cutoff_utc": "2026-11-14T19:02:21Z"
+      },
+      {
+        "valid_utc": "2026-11-15T15:00:00Z",
+        "issued_utc": "2026-11-14T19:58:55Z",
+        "source_run_utc": "2026-11-14T00:00:00Z",
+        "temperature_c": 21.045,
+        "wind_speed_ms": 11.349,
+        "station_id": "0-20000-0-68811",
+        "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+        "training_cutoff_utc": "2026-11-14T19:02:21Z"
+      }
+    ]
+  },
+  "supported_sast_hours": [
+    5,
+    11,
+    17,
+    23
+  ],
+  "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+  "training_cutoff_utc": "2026-11-14T19:02:21Z",
+  "expires_utc": "2026-11-21T19:02:21Z",
+  "training_n": 10,
+  "uncertainty": {
+    "prediction_interval": null,
+    "reason": "Too few independent weather days to estimate reliable coverage."
+  }
+}

@@ -1,0 +1,42 @@
+{
+  "method": "geelbek-two-period-median-v1",
+  "model_version": "geelbek-two-period-median-v1-38cb25faa202",
+  "status": "experimental station proxy",
+  "validated_default": false,
+  "target": {
+    "town": "langebaan",
+    "station_id": "0-20000-0-68811",
+    "station_name": "Geelbek AWS",
+    "latitude": -33.18334,
+    "longitude": 18.11666,
+    "distance_km": 12.71,
+    "scope": "Geelbek station proxy using the Langebaan town forecast"
+  },
+  "created_utc": "2026-11-14T19:51:18Z",
+  "training_cutoff_utc": "2026-11-14T19:02:21Z",
+  "expires_utc": "2026-11-21T19:02:21Z",
+  "training_n": 10,
+  "training_from_utc": "2026-11-12T09:00:00Z",
+  "training_until_utc": "2026-11-14T15:00:00Z",
+  "training_sha256": "38cb25faa2022bb13bcd6a16c40a381cbc6488cda58e5d51b0df66b334b4762d",
+  "parameters": {
+    "day": {
+      "temperature_offset_c": 2.125,
+      "wind_factor": 0.91523,
+      "training_n": 6
+    },
+    "night": {
+      "temperature_offset_c": -4,
+      "wind_factor": 0.5,
+      "training_n": 4
+    }
+  },
+  "training_lead_hours": [
+    16.044,
+    23.962
+  ],
+  "uncertainty": {
+    "prediction_interval": null,
+    "reason": "Too few independent weather days to estimate reliable coverage."
+  }
+}

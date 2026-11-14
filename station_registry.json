@@ -1,0 +1,22 @@
+{
+  "checked_utc": "2026-11-14",
+  "stations": {
+    "68712": {"name": "Cape Columbine", "latitude": -32.8278, "longitude": 17.8558, "exposure": "coastal lighthouse proxy, not an in-town sensor"},
+    "68811": {"name": "Geelbek", "latitude": -33.1964, "longitude": 18.1241, "exposure": "southern lagoon proxy, not central Langebaan"},
+    "68614": {"name": "Vredendal", "latitude": -31.673, "longitude": 18.496, "exposure": "town-area station"},
+    "68715": {"name": "Malmesbury", "latitude": -33.4725, "longitude": 18.7183, "exposure": "town-area station"},
+    "68613": {"name": "Lamberts Bay Nortier", "latitude": -32.0351, "longitude": 18.3326, "exposure": "Nortier inland farm proxy, not the harbour"}
+  },
+  "unavailable": {
+    "yzerfontein": "No verified active nearby public report. Dassen Island is an offshore exposure and OSCAR marks it closed since 2012.",
+    "st-helena-bay": "No verified compatible nearby public station report.",
+    "velddrif": "No verified compatible nearby public station report.",
+    "darling": "No verified compatible nearby public station report.",
+    "riebeek-valley": "Malmesbury is a different exposure about 19 km away; no verified local valley report.",
+    "saldanha": "Langebaanweg is an airport exposure about 20 km away; no verified local harbour report.",
+    "vredenburg": "Langebaanweg is a different airport exposure; no verified in-town report.",
+    "dwarskersbos": "No verified compatible nearby public station report.",
+    "piketberg": "Porterville is a different inland exposure about 24 km away; no verified local report.",
+    "elandsbaai": "No verified compatible nearby public station report."
+  }
+}

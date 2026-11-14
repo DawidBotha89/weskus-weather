@@ -1,0 +1,266 @@
+{
+  "method": "Retrospective temporal replay; later audit patterns informed the choice of model family.",
+  "prospectively_validated": false,
+  "source_sha256": {
+    "ledger.json": "732478cd06a66d410b2a688982263f9d7bcea317bc77ce2fc1d8633f4c7cb8e8",
+    "history.json": "86a43f4650d32a18d605f0d2e4a9d44dca1454ba2911ece1b8288b4ed11cf7aa",
+    "matched-rows.json": "d4664935eabe94a7f4cd28b434e6add3be2310887ff88f99c990ffa7374230cf",
+    "latest.json": "a6ea0de89f0029ab01b40b5eb6dfe762f68f58144f1ba3e442ee8d3d3fb00333"
+  },
+  "excluded": [
+    {
+      "valid_utc": "2026-11-11T03:00:00+00:00",
+      "reason": "No archived observation receipt evidence"
+    },
+    {
+      "valid_utc": "2026-11-11T09:00:00+00:00",
+      "reason": "No archived observation receipt evidence"
+    }
+  ],
+  "early_model": {
+    "method": "geelbek-two-period-median-v1",
+    "model_version": "geelbek-two-period-median-v1-9fd0792d5747",
+    "status": "experimental station proxy",
+    "validated_default": false,
+    "target": {
+      "town": "langebaan",
+      "station_id": "0-20000-0-68811",
+      "station_name": "Geelbek AWS",
+      "latitude": -33.18334,
+      "longitude": 18.11666,
+      "distance_km": 12.71,
+      "scope": "Geelbek station proxy using the Langebaan town forecast"
+    },
+    "created_utc": "2026-11-13T06:00:00Z",
+    "training_cutoff_utc": "2026-11-13T06:00:00Z",
+    "expires_utc": "2026-11-20T06:00:00Z",
+    "training_n": 4,
+    "training_from_utc": "2026-11-12T09:00:00Z",
+    "training_until_utc": "2026-11-13T03:00:00Z",
+    "training_sha256": "9fd0792d5747a0b28f1c29a39668bb09b890af497a9db7c36d9bdea9d0a4f5cd",
+    "parameters": {
+      "day": {
+        "temperature_offset_c": 1.675,
+        "wind_factor": 0.92664,
+        "training_n": 2
+      },
+      "night": {
+        "temperature_offset_c": -4,
+        "wind_factor": 0.5,
+        "training_n": 2
+      }
+    },
+    "training_lead_hours": [
+      16.571,
+      22.571
+    ],
+    "uncertainty": {
+      "prediction_interval": null,
+      "reason": "Too few independent weather days to estimate reliable coverage."
+    }
+  },
+  "later_observation_holdout": {
+    "n": 6,
+    "day_n": 4,
+    "night_n": 2,
+    "metrics": {
+      "raw": {
+        "temperature_c": {
+          "mae": 2.7633,
+          "bias": 0.0
+        },
+        "wind_speed_ms": {
+          "mae": 1.8667,
+          "bias": 1.6867
+        }
+      },
+      "met": {
+        "temperature_c": {
+          "mae": 2.5,
+          "bias": 0.1333
+        },
+        "wind_speed_ms": {
+          "mae": 3.763,
+          "bias": 3.763
+        }
+      },
+      "candidate": {
+        "temperature_c": {
+          "mae": 0.9833,
+          "bias": -0.2167
+        },
+        "wind_speed_ms": {
+          "mae": 0.7532,
+          "bias": -0.1338
+        }
+      }
+    },
+    "pairs": [
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-13T09:00:00Z",
+        "saved_utc": "2026-11-12T16:57:22.165750+00:00",
+        "available_utc": "2026-11-13T09:31:13Z",
+        "archived_utc": "2026-11-13T10:02:21Z",
+        "temperature_c": 19.24,
+        "wind_speed_ms": 7.71,
+        "met_temperature_c": 19.5,
+        "met_wind_speed_ms": 7.778,
+        "actual_temperature_c": 22.2,
+        "actual_wind_speed_ms": 7.2,
+        "candidate_temperature_c": 20.915,
+        "candidate_wind_speed_ms": 7.144
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-13T15:00:00Z",
+        "saved_utc": "2026-11-12T16:57:22.165750+00:00",
+        "available_utc": "2026-11-13T15:31:13Z",
+        "archived_utc": "2026-11-13T16:02:26Z",
+        "temperature_c": 18.59,
+        "wind_speed_ms": 10.93,
+        "met_temperature_c": 18.4,
+        "met_wind_speed_ms": 12.222,
+        "actual_temperature_c": 19.9,
+        "actual_wind_speed_ms": 9.8,
+        "candidate_temperature_c": 20.265,
+        "candidate_wind_speed_ms": 10.128
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-13T21:00:00Z",
+        "saved_utc": "2026-11-12T21:02:16.263915+00:00",
+        "available_utc": "2026-11-13T21:31:16Z",
+        "archived_utc": "2026-11-13T22:02:23Z",
+        "temperature_c": 16.75,
+        "wind_speed_ms": 10.1,
+        "met_temperature_c": 16.2,
+        "met_wind_speed_ms": 12.778,
+        "actual_temperature_c": 13.8,
+        "actual_wind_speed_ms": 6.2,
+        "candidate_temperature_c": 12.75,
+        "candidate_wind_speed_ms": 5.05
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-14T03:00:00Z",
+        "saved_utc": "2026-11-13T03:02:40.049034+00:00",
+        "available_utc": "2026-11-14T03:31:13Z",
+        "archived_utc": "2026-11-14T04:02:25Z",
+        "temperature_c": 15.44,
+        "wind_speed_ms": 6.42,
+        "met_temperature_c": 15.6,
+        "met_wind_speed_ms": 10.833,
+        "actual_temperature_c": 10.1,
+        "actual_wind_speed_ms": 3.6,
+        "candidate_temperature_c": 11.44,
+        "candidate_wind_speed_ms": 3.21
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-14T09:00:00Z",
+        "saved_utc": "2026-11-13T09:02:19.202845+00:00",
+        "available_utc": "2026-11-14T09:31:18Z",
+        "archived_utc": "2026-11-14T10:02:22Z",
+        "temperature_c": 20.36,
+        "wind_speed_ms": 7.16,
+        "met_temperature_c": 21.3,
+        "met_wind_speed_ms": 8.889,
+        "actual_temperature_c": 23.3,
+        "actual_wind_speed_ms": 7.7,
+        "candidate_temperature_c": 22.035,
+        "candidate_wind_speed_ms": 6.635
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-14T15:00:00Z",
+        "saved_utc": "2026-11-13T15:02:26.720297+00:00",
+        "available_utc": "2026-11-14T15:31:13Z",
+        "archived_utc": "2026-11-14T15:54:55Z",
+        "temperature_c": 20.32,
+        "wind_speed_ms": 10.5,
+        "met_temperature_c": 20.5,
+        "met_wind_speed_ms": 12.778,
+        "actual_temperature_c": 21.4,
+        "actual_wind_speed_ms": 8.200000000000001,
+        "candidate_temperature_c": 21.995,
+        "candidate_wind_speed_ms": 9.73
+      }
+    ]
+  },
+  "saved_after_training_cutoff": {
+    "n": 2,
+    "day_n": 2,
+    "night_n": 0,
+    "metrics": {
+      "raw": {
+        "temperature_c": {
+          "mae": 2.01,
+          "bias": -2.01
+        },
+        "wind_speed_ms": {
+          "mae": 1.42,
+          "bias": 0.88
+        }
+      },
+      "met": {
+        "temperature_c": {
+          "mae": 1.45,
+          "bias": -1.45
+        },
+        "wind_speed_ms": {
+          "mae": 2.8835,
+          "bias": 2.8835
+        }
+      },
+      "candidate": {
+        "temperature_c": {
+          "mae": 0.93,
+          "bias": -0.335
+        },
+        "wind_speed_ms": {
+          "mae": 1.2975,
+          "bias": 0.2325
+        }
+      }
+    },
+    "pairs": [
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-14T09:00:00Z",
+        "saved_utc": "2026-11-13T09:02:19.202845+00:00",
+        "available_utc": "2026-11-14T09:31:18Z",
+        "archived_utc": "2026-11-14T10:02:22Z",
+        "temperature_c": 20.36,
+        "wind_speed_ms": 7.16,
+        "met_temperature_c": 21.3,
+        "met_wind_speed_ms": 8.889,
+        "actual_temperature_c": 23.3,
+        "actual_wind_speed_ms": 7.7,
+        "candidate_temperature_c": 22.035,
+        "candidate_wind_speed_ms": 6.635
+      },
+      {
+        "station_id": "0-20000-0-68811",
+        "valid_utc": "2026-11-14T15:00:00Z",
+        "saved_utc": "2026-11-13T15:02:26.720297+00:00",
+        "available_utc": "2026-11-14T15:31:13Z",
+        "archived_utc": "2026-11-14T15:54:55Z",
+        "temperature_c": 20.32,
+        "wind_speed_ms": 10.5,
+        "met_temperature_c": 20.5,
+        "met_wind_speed_ms": 12.778,
+        "actual_temperature_c": 21.4,
+        "actual_wind_speed_ms": 8.200000000000001,
+        "candidate_temperature_c": 21.995,
+        "candidate_wind_speed_ms": 9.73
+      }
+    ]
+  },
+  "limits": [
+    "Repeated observations cover very few days and share weather conditions.",
+    "The fitted location is Geelbek, 12.71 km from Langebaan.",
+    "The strict issue-time replay has no independent nighttime observations.",
+    "The future candidate uses later observations too and requires new frozen prospective scores."
+  ]
+}

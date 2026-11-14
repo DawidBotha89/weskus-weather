@@ -30,7 +30,7 @@ jobs:
       - name: Publish available readings and verification ledger
         if: steps.collect.outputs.snapshot_written == 'true'
         run: |
-          git add -- data/latest.json data/verification.json
+          git add -- data/latest.json data/verification.json data/candidate-verification.json
           if ! git diff --cached --quiet; then
             git config user.name 'github-actions[bot]'
             git config user.email '41898282+github-actions[bot]@users.noreply.github.com'

@@ -31,6 +31,7 @@ class StationTests(unittest.TestCase):
         prior = {"station_id": station, "source_etag": "rev1", "observed_utc": stamp(NOW)}
         item = (NOW, "unused", "rev1", stamp(NOW))
         with (patch.dict(stations.STATIONS, {slug: stations.STATIONS[slug]}, clear=True),
+              patch.object(stations, "collect_bulletins", return_value=([], {}, [])),
               patch.object(stations, "latest_reports", return_value=[item]),
               patch.object(stations, "fetch", side_effect=AssertionError("cached payload downloaded"))):
             result = stations.update_stations({"towns": {slug: prior}}, now=NOW)
@@ -46,11 +47,12 @@ class StationTests(unittest.TestCase):
             if station == stations.STATIONS["paternoster"][0]:
                 raise OSError("source offline")
             return []
-        with patch.object(stations, "latest_reports", side_effect=list_reports), redirect_stderr(io.StringIO()):
+        with (patch.object(stations, "latest_reports", side_effect=list_reports),
+              patch.object(stations, "collect_bulletins", return_value=([], {}, [])), redirect_stderr(io.StringIO())):
             result = stations.update_stations(old, now=NOW)
         self.assertEqual(result["towns"], old["towns"])
         self.assertEqual(result["refresh_errors"], ["paternoster"])
-        self.assertFalse(result["history"])
+        self.assertEqual(result["history"]["paternoster"], [old["towns"]["paternoster"]])
 
 
 class OffshoreTests(unittest.TestCase):

@@ -13,6 +13,8 @@ from baseline import TOWNS, update_baseline, utc
 from marine import AREAS, update_marine
 from stations import STATIONS, update_stations
 from verification import score
+from calibration import calibrated_candidate
+from candidate_verification import score_candidate
 
 COLLECTORS = {"atmosphere": update_forecast, "baseline": update_baseline,
               "marine": update_marine, "stations": update_stations}
@@ -153,6 +155,7 @@ def main(folder):
     folder.mkdir(parents=True, exist_ok=True)
     previous = load(folder / "latest.json")
     ledger = load(folder / "verification.json")
+    candidate_ledger = load(folder / "candidate-verification.json")
     feed = {"schema_version": 1, "centres": TOWNS}
     attempted = utc(dt.datetime.now(dt.timezone.utc))
     attempts, errors = {}, {}
@@ -176,12 +179,16 @@ def main(folder):
                             report["stale"] = True
     feed["generated_utc"] = utc(now)
     feed["scores"] = score(feed, ledger, now)
+    model = load(Path(__file__).parent / "research/geelbek-20261114/geelbek-model.json")
+    feed["calibration"] = calibrated_candidate(feed["atmosphere"], model, now)
+    feed["candidate_scores"] = score_candidate(feed, candidate_ledger, now)
     feed["refresh_errors"] = sorted(errors)
     feed["health"] = {"attempted_utc": attempted,
                       "last_success_utc": utc(now) if not errors else previous.get("health", {}).get("last_success_utc"),
                       "status": "degraded" if errors else "complete", "attempts": attempts,
                       "errors": errors, "warnings": station_warnings(feed["stations"], now)}
     write(folder / "verification.json", ledger)
+    write(folder / "candidate-verification.json", candidate_ledger)
     write(folder / "latest.json", feed)
     if os.environ.get("GITHUB_OUTPUT"):
         with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as output:
