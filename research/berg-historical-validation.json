@@ -1,0 +1,314 @@
+{
+  "status": "research only; sparse satellite overpasses; no local tide table",
+  "reach_id": "12602000013",
+  "reference_lat_lon": [
+    -32.7900528,
+    18.1671095
+  ],
+  "source": "https://doi.org/10.5067/SWOT-RIVERSP-D",
+  "boundary": [
+    "Saldanha Bay",
+    "Port Nolloth"
+  ],
+  "datum": "SWOT EGM2008 geoid. Fitted intercept is a statistical offset.",
+  "source_quality_counts": {
+    "1": 101,
+    "2": 4
+  },
+  "retained_quality": [
+    "0 good",
+    "1 suspect"
+  ],
+  "median_reported_wse_uncertainty_m": 0.1066,
+  "train_n": 62,
+  "train_dates": [
+    "2024-01-05T02:08:15Z",
+    "2025-12-23T23:13:26Z"
+  ],
+  "holdout_dates": [
+    "2026-01-04T08:25:59Z",
+    "2026-11-01T22:29:35Z"
+  ],
+  "input_n": 105,
+  "fit": {
+    "lag_minutes": 55,
+    "gain": 0.49635,
+    "offset_m": -0.42205
+  },
+  "held_out_pairs": [
+    {
+      "utc": "2026-01-04T08:25:59Z",
+      "measured_reach_m": -0.4337,
+      "coast_m": -0.61005,
+      "transfer_m": -0.27359
+    },
+    {
+      "utc": "2026-01-13T19:58:30Z",
+      "measured_reach_m": 0.0178,
+      "coast_m": 0.11949,
+      "transfer_m": 0.02894
+    },
+    {
+      "utc": "2026-01-25T05:11:03Z",
+      "measured_reach_m": 0.3369,
+      "coast_m": 0.70978,
+      "transfer_m": 0.33336
+    },
+    {
+      "utc": "2026-02-03T16:43:35Z",
+      "measured_reach_m": 0.2893,
+      "coast_m": 0.41464,
+      "transfer_m": 0.37963
+    },
+    {
+      "utc": "2026-02-15T01:56:07Z",
+      "measured_reach_m": 0.1294,
+      "coast_m": 0.47869,
+      "transfer_m": 0.31601
+    },
+    {
+      "utc": "2026-02-24T13:28:40Z",
+      "measured_reach_m": -0.0161,
+      "coast_m": -0.23379,
+      "transfer_m": -0.10745
+    },
+    {
+      "utc": "2026-03-07T22:41:15Z",
+      "measured_reach_m": -0.2815,
+      "coast_m": -0.3316,
+      "transfer_m": -0.1844
+    },
+    {
+      "utc": "2026-03-17T10:13:47Z",
+      "measured_reach_m": -0.0375,
+      "coast_m": 0.30324,
+      "transfer_m": 0.00628
+    },
+    {
+      "utc": "2026-03-28T08:36:38Z",
+      "measured_reach_m": 0.1294,
+      "coast_m": 0.28506,
+      "transfer_m": 0.08189
+    },
+    {
+      "utc": "2026-03-28T19:26:19Z",
+      "measured_reach_m": -0.0687,
+      "coast_m": -0.01434,
+      "transfer_m": -0.07472
+    },
+    {
+      "utc": "2026-04-07T06:58:51Z",
+      "measured_reach_m": -0.2528,
+      "coast_m": 0.06184,
+      "transfer_m": 0.14952
+    },
+    {
+      "utc": "2026-04-18T05:21:43Z",
+      "measured_reach_m": 0.4996,
+      "coast_m": -0.24381,
+      "transfer_m": 0.12588
+    },
+    {
+      "utc": "2026-04-18T16:11:25Z",
+      "measured_reach_m": 0.5372,
+      "coast_m": 0.39406,
+      "transfer_m": 0.38378
+    },
+    {
+      "utc": "2026-04-28T03:43:57Z",
+      "measured_reach_m": -0.1056,
+      "coast_m": -0.30931,
+      "transfer_m": 0.00937
+    },
+    {
+      "utc": "2026-05-09T02:06:47Z",
+      "measured_reach_m": -0.195,
+      "coast_m": -0.07363,
+      "transfer_m": -0.04277
+    },
+    {
+      "utc": "2026-05-09T12:56:29Z",
+      "measured_reach_m": -0.0377,
+      "coast_m": -0.20641,
+      "transfer_m": -0.07422
+    },
+    {
+      "utc": "2026-05-29T22:51:51Z",
+      "measured_reach_m": -0.1289,
+      "coast_m": 0.45009,
+      "transfer_m": 0.12877
+    },
+    {
+      "utc": "2026-05-30T09:41:33Z",
+      "measured_reach_m": -0.1285,
+      "coast_m": -0.01816,
+      "transfer_m": -0.12101
+    },
+    {
+      "utc": "2026-06-08T21:14:04Z",
+      "measured_reach_m": 0.1614,
+      "coast_m": 0.31418,
+      "transfer_m": 0.24317
+    },
+    {
+      "utc": "2026-06-19T19:36:57Z",
+      "measured_reach_m": 0.1431,
+      "coast_m": 0.24623,
+      "transfer_m": 0.25745
+    },
+    {
+      "utc": "2026-06-20T06:26:38Z",
+      "measured_reach_m": 0.2504,
+      "coast_m": 0.40521,
+      "transfer_m": 0.26193
+    },
+    {
+      "utc": "2026-06-29T17:59:10Z",
+      "measured_reach_m": -0.2145,
+      "coast_m": -0.29286,
+      "transfer_m": -0.03684
+    },
+    {
+      "utc": "2026-07-10T16:22:01Z",
+      "measured_reach_m": -0.4464,
+      "coast_m": -0.30794,
+      "transfer_m": -0.13667
+    },
+    {
+      "utc": "2026-07-11T03:11:42Z",
+      "measured_reach_m": -0.0325,
+      "coast_m": -0.39617,
+      "transfer_m": -0.07434
+    },
+    {
+      "utc": "2026-07-20T14:44:13Z",
+      "measured_reach_m": -0.0834,
+      "coast_m": 0.09427,
+      "transfer_m": -0.03408
+    },
+    {
+      "utc": "2026-07-31T13:07:04Z",
+      "measured_reach_m": 0.0563,
+      "coast_m": 0.56182,
+      "transfer_m": 0.18186
+    },
+    {
+      "utc": "2026-08-10T11:29:18Z",
+      "measured_reach_m": -0.02,
+      "coast_m": 0.64728,
+      "transfer_m": 0.29464
+    },
+    {
+      "utc": "2026-08-21T09:52:09Z",
+      "measured_reach_m": 0.0042,
+      "coast_m": 0.12914,
+      "transfer_m": 0.10704
+    },
+    {
+      "utc": "2026-08-21T20:41:51Z",
+      "measured_reach_m": 0.0881,
+      "coast_m": 0.21983,
+      "transfer_m": 0.12766
+    },
+    {
+      "utc": "2026-08-31T08:14:23Z",
+      "measured_reach_m": -0.3197,
+      "coast_m": -0.60744,
+      "transfer_m": -0.18142
+    },
+    {
+      "utc": "2026-09-11T06:37:15Z",
+      "measured_reach_m": -0.296,
+      "coast_m": -0.6919,
+      "transfer_m": -0.22852
+    },
+    {
+      "utc": "2026-09-11T17:26:56Z",
+      "measured_reach_m": 0.2417,
+      "coast_m": -0.24634,
+      "transfer_m": 0.07888
+    },
+    {
+      "utc": "2026-09-21T04:59:27Z",
+      "measured_reach_m": 0.0139,
+      "coast_m": -0.17728,
+      "transfer_m": -0.07175
+    },
+    {
+      "utc": "2026-10-02T03:22:17Z",
+      "measured_reach_m": 0.3292,
+      "coast_m": 0.37319,
+      "transfer_m": 0.1181
+    },
+    {
+      "utc": "2026-10-02T14:11:59Z",
+      "measured_reach_m": 0.1467,
+      "coast_m": 0.11554,
+      "transfer_m": -0.01324
+    },
+    {
+      "utc": "2026-10-12T01:44:30Z",
+      "measured_reach_m": 0.0871,
+      "coast_m": 0.7647,
+      "transfer_m": 0.34212
+    },
+    {
+      "utc": "2026-10-23T00:07:22Z",
+      "measured_reach_m": 0.1456,
+      "coast_m": 0.52009,
+      "transfer_m": 0.30818
+    },
+    {
+      "utc": "2026-10-23T10:57:04Z",
+      "measured_reach_m": 0.3975,
+      "coast_m": 0.74152,
+      "transfer_m": 0.33681
+    },
+    {
+      "utc": "2026-11-01T22:29:35Z",
+      "measured_reach_m": -0.316,
+      "coast_m": -0.01649,
+      "transfer_m": 0.07667
+    }
+  ],
+  "transfer_by_orbit_pass": {
+    "014": {
+      "n": 11,
+      "rmse_m": 0.2005,
+      "mae_m": 0.175,
+      "bias_m": 0.06
+    },
+    "027": {
+      "n": 14,
+      "rmse_m": 0.1049,
+      "mae_m": 0.0805,
+      "bias_m": -0.0087
+    },
+    "292": {
+      "n": 14,
+      "rmse_m": 0.2034,
+      "mae_m": 0.1606,
+      "bias_m": 0.1353
+    }
+  },
+  "holdout": {
+    "fitted_transfer": {
+      "n": 39,
+      "rmse_m": 0.1736,
+      "mae_m": 0.1359,
+      "bias_m": 0.0624
+    },
+    "coast_plus_training_offset": {
+      "n": 39,
+      "rmse_m": 0.3171,
+      "mae_m": 0.258,
+      "bias_m": 0.0765
+    },
+    "training_mean_only": {
+      "n": 39,
+      "rmse_m": 0.2422,
+      "mae_m": 0.1957,
+      "bias_m": 0.0417
+    }
+  }
+}

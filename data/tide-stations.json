@@ -1,0 +1,806 @@
+{
+ "generated": "2026-10-16",
+ "stations": [
+  {
+   "id": "ticon/cape_town-704-zaf-uhslc_fd",
+   "name": "Cape Town",
+   "lat": -33.9,
+   "lon": 18.417,
+   "epoch": {
+    "start": "2001-03-28",
+    "end": "2018-10-31"
+   },
+   "msl": 1.055,
+   "lat_datum": 0.087,
+   "attribution": "Neaps tide database (https://github.com/openwatersio/tide-database). Source: Hart-Davis, M., Dettmering, D., Seitz, F. (2025), TICON-4: TIdal CONstants based on GESLA-4 sea-level records, SEANOE, https://doi.org/10.17882/109129. Licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Modified: see https://github.com/openwatersio/tide-database#modifications-to-source-data",
+   "license": "cc-by-4.0",
+   "source_url": "https://www.seanoe.org/data/00980/109129/",
+   "constituents": [
+    {
+     "name": "M2",
+     "amplitude": 0.49916,
+     "phase": 35.02
+    },
+    {
+     "name": "N2",
+     "amplitude": 0.11074,
+     "phase": 27.115
+    },
+    {
+     "name": "S2",
+     "amplitude": 0.21925,
+     "phase": 55.021
+    },
+    {
+     "name": "K2",
+     "amplitude": 0.06131,
+     "phase": 51.691
+    },
+    {
+     "name": "2N2",
+     "amplitude": 0.01664,
+     "phase": 8.581
+    },
+    {
+     "name": "S1",
+     "amplitude": 0.00402,
+     "phase": 335.075
+    },
+    {
+     "name": "K1",
+     "amplitude": 0.05781,
+     "phase": 109.621
+    },
+    {
+     "name": "P1",
+     "amplitude": 0.01566,
+     "phase": 109.771
+    },
+    {
+     "name": "O1",
+     "amplitude": 0.0147,
+     "phase": 235.372
+    },
+    {
+     "name": "Q1",
+     "amplitude": 0.00883,
+     "phase": 222.624
+    },
+    {
+     "name": "M1",
+     "amplitude": 0.00168,
+     "phase": 28.46
+    },
+    {
+     "name": "M4",
+     "amplitude": 0.00618,
+     "phase": 58.76
+    },
+    {
+     "name": "MM",
+     "amplitude": 0.00072,
+     "phase": 87.393
+    },
+    {
+     "name": "MF",
+     "amplitude": 0.00298,
+     "phase": 352.901
+    },
+    {
+     "name": "SA",
+     "amplitude": 0.02055,
+     "phase": 308.181
+    },
+    {
+     "name": "SSA",
+     "amplitude": 0.00743,
+     "phase": 309.848
+    },
+    {
+     "name": "T2",
+     "amplitude": 0.01207,
+     "phase": 58.764
+    },
+    {
+     "name": "J1",
+     "amplitude": 0.00468,
+     "phase": 133.643
+    },
+    {
+     "name": "L2",
+     "amplitude": 0.0139,
+     "phase": 36.608
+    },
+    {
+     "name": "R2",
+     "amplitude": 0.00355,
+     "phase": 66.068
+    },
+    {
+     "name": "2Q1",
+     "amplitude": 0.00197,
+     "phase": 189.676
+    },
+    {
+     "name": "MSF",
+     "amplitude": 0.00217,
+     "phase": 332.785
+    },
+    {
+     "name": "MSQM",
+     "amplitude": 0.00182,
+     "phase": 31.727
+    },
+    {
+     "name": "EP2",
+     "amplitude": 0.00423,
+     "phase": 350.61
+    },
+    {
+     "name": "M3",
+     "amplitude": 0.00537,
+     "phase": 296.138
+    },
+    {
+     "name": "MU2",
+     "amplitude": 0.01895,
+     "phase": 10.793
+    },
+    {
+     "name": "MTM",
+     "amplitude": 0.00427,
+     "phase": 307.118
+    },
+    {
+     "name": "NU2",
+     "amplitude": 0.02046,
+     "phase": 26.977
+    },
+    {
+     "name": "LAMBDA2",
+     "amplitude": 0.00281,
+     "phase": 25.104
+    },
+    {
+     "name": "MN4",
+     "amplitude": 0.00281,
+     "phase": 6.354
+    },
+    {
+     "name": "MS4",
+     "amplitude": 0.00342,
+     "phase": 126.487
+    },
+    {
+     "name": "MKS2",
+     "amplitude": 0.00154,
+     "phase": 48.411
+    },
+    {
+     "name": "N4",
+     "amplitude": 0.00053,
+     "phase": 312.239
+    },
+    {
+     "name": "M6",
+     "amplitude": 0.00084,
+     "phase": 139.172
+    },
+    {
+     "name": "M8",
+     "amplitude": 0.00013,
+     "phase": 74.651
+    },
+    {
+     "name": "S4",
+     "amplitude": 0.00132,
+     "phase": 184.939
+    },
+    {
+     "name": "OO1",
+     "amplitude": 0.00476,
+     "phase": 164.797
+    },
+    {
+     "name": "S3",
+     "amplitude": 0.00156,
+     "phase": 107.425
+    },
+    {
+     "name": "MA2",
+     "amplitude": 0.00123,
+     "phase": 15.622
+    },
+    {
+     "name": "MB2",
+     "amplitude": 0.0013,
+     "phase": 13.023
+    },
+    {
+     "name": "T3",
+     "amplitude": 0.00178,
+     "phase": 145.53
+    },
+    {
+     "name": "R3",
+     "amplitude": 0.00197,
+     "phase": 336.651
+    },
+    {
+     "name": "RHO1",
+     "amplitude": 0.00133,
+     "phase": 227.21
+    },
+    {
+     "name": "SGM",
+     "amplitude": 0.0021,
+     "phase": 20.228
+    },
+    {
+     "name": "3L2",
+     "amplitude": 0.00236,
+     "phase": 113.501
+    },
+    {
+     "name": "3N2",
+     "amplitude": 0.00132,
+     "phase": 163.499
+    },
+    {
+     "name": "2SM2",
+     "amplitude": 0.00103,
+     "phase": 226.642
+    },
+    {
+     "name": "2MS6",
+     "amplitude": 0.00052,
+     "phase": 45.056
+    },
+    {
+     "name": "2MK5",
+     "amplitude": 0.00053,
+     "phase": 165.123
+    },
+    {
+     "name": "2MO5",
+     "amplitude": 0.00044,
+     "phase": 300.972
+    }
+   ]
+  },
+  {
+   "id": "ticon/saldahna_bay-703-zaf-uhslc_fd",
+   "name": "Saldahna Bay",
+   "lat": -33.017,
+   "lon": 17.95,
+   "epoch": {
+    "start": "2000-05-24",
+    "end": "2018-10-31"
+   },
+   "msl": 1.067,
+   "lat_datum": 0.099,
+   "attribution": "Neaps tide database (https://github.com/openwatersio/tide-database). Source: Hart-Davis, M., Dettmering, D., Seitz, F. (2025), TICON-4: TIdal CONstants based on GESLA-4 sea-level records, SEANOE, https://doi.org/10.17882/109129. Licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Modified: see https://github.com/openwatersio/tide-database#modifications-to-source-data",
+   "license": "cc-by-4.0",
+   "source_url": "https://www.seanoe.org/data/00980/109129/",
+   "constituents": [
+    {
+     "name": "M2",
+     "amplitude": 0.50434,
+     "phase": 32.586
+    },
+    {
+     "name": "N2",
+     "amplitude": 0.11239,
+     "phase": 23.606
+    },
+    {
+     "name": "S2",
+     "amplitude": 0.21905,
+     "phase": 51.965
+    },
+    {
+     "name": "K2",
+     "amplitude": 0.06223,
+     "phase": 47.953
+    },
+    {
+     "name": "2N2",
+     "amplitude": 0.01724,
+     "phase": 6.585
+    },
+    {
+     "name": "S1",
+     "amplitude": 0.0029,
+     "phase": 1.313
+    },
+    {
+     "name": "K1",
+     "amplitude": 0.05656,
+     "phase": 105.79
+    },
+    {
+     "name": "P1",
+     "amplitude": 0.01456,
+     "phase": 103.81
+    },
+    {
+     "name": "O1",
+     "amplitude": 0.01571,
+     "phase": 232.32
+    },
+    {
+     "name": "Q1",
+     "amplitude": 0.00883,
+     "phase": 217.723
+    },
+    {
+     "name": "M1",
+     "amplitude": 0.00141,
+     "phase": 18.62
+    },
+    {
+     "name": "M4",
+     "amplitude": 0.00617,
+     "phase": 56.595
+    },
+    {
+     "name": "MM",
+     "amplitude": 0.00251,
+     "phase": 350.651
+    },
+    {
+     "name": "MF",
+     "amplitude": 0.00534,
+     "phase": 7.828
+    },
+    {
+     "name": "SA",
+     "amplitude": 0.03383,
+     "phase": 296.175
+    },
+    {
+     "name": "SSA",
+     "amplitude": 0.00962,
+     "phase": 325.379
+    },
+    {
+     "name": "T2",
+     "amplitude": 0.01388,
+     "phase": 55.869
+    },
+    {
+     "name": "J1",
+     "amplitude": 0.00505,
+     "phase": 129.137
+    },
+    {
+     "name": "L2",
+     "amplitude": 0.01324,
+     "phase": 34.374
+    },
+    {
+     "name": "R2",
+     "amplitude": 0.0045,
+     "phase": 65.863
+    },
+    {
+     "name": "2Q1",
+     "amplitude": 0.00192,
+     "phase": 183.878
+    },
+    {
+     "name": "MSF",
+     "amplitude": 0.00192,
+     "phase": 73.117
+    },
+    {
+     "name": "MSQM",
+     "amplitude": 0.00317,
+     "phase": 67.283
+    },
+    {
+     "name": "EP2",
+     "amplitude": 0.00491,
+     "phase": 349.413
+    },
+    {
+     "name": "M3",
+     "amplitude": 0.00554,
+     "phase": 294.395
+    },
+    {
+     "name": "MU2",
+     "amplitude": 0.01891,
+     "phase": 8.292
+    },
+    {
+     "name": "MTM",
+     "amplitude": 0.00623,
+     "phase": 324.587
+    },
+    {
+     "name": "NU2",
+     "amplitude": 0.02038,
+     "phase": 23.696
+    },
+    {
+     "name": "LAMBDA2",
+     "amplitude": 0.00317,
+     "phase": 21.487
+    },
+    {
+     "name": "MN4",
+     "amplitude": 0.00252,
+     "phase": 358.919
+    },
+    {
+     "name": "MS4",
+     "amplitude": 0.00328,
+     "phase": 118.237
+    },
+    {
+     "name": "MKS2",
+     "amplitude": 0.00194,
+     "phase": 52.971
+    },
+    {
+     "name": "N4",
+     "amplitude": 0.00047,
+     "phase": 313.185
+    },
+    {
+     "name": "M6",
+     "amplitude": 0.00062,
+     "phase": 157.232
+    },
+    {
+     "name": "M8",
+     "amplitude": 0.00002,
+     "phase": 13.497
+    },
+    {
+     "name": "S4",
+     "amplitude": 0.00123,
+     "phase": 175.445
+    },
+    {
+     "name": "OO1",
+     "amplitude": 0.00512,
+     "phase": 164.031
+    },
+    {
+     "name": "S3",
+     "amplitude": 0.00165,
+     "phase": 113.887
+    },
+    {
+     "name": "MA2",
+     "amplitude": 0.00289,
+     "phase": 32.63
+    },
+    {
+     "name": "MB2",
+     "amplitude": 0.00263,
+     "phase": 148.641
+    },
+    {
+     "name": "T3",
+     "amplitude": 0.00167,
+     "phase": 132.833
+    },
+    {
+     "name": "R3",
+     "amplitude": 0.00153,
+     "phase": 327.706
+    },
+    {
+     "name": "RHO1",
+     "amplitude": 0.00165,
+     "phase": 213.17
+    },
+    {
+     "name": "SGM",
+     "amplitude": 0.00182,
+     "phase": 13.596
+    },
+    {
+     "name": "3L2",
+     "amplitude": 0.00249,
+     "phase": 133.274
+    },
+    {
+     "name": "3N2",
+     "amplitude": 0.00303,
+     "phase": 80.654
+    },
+    {
+     "name": "2SM2",
+     "amplitude": 0.00076,
+     "phase": 227.118
+    },
+    {
+     "name": "2MS6",
+     "amplitude": 0.00051,
+     "phase": 223.506
+    },
+    {
+     "name": "2MK5",
+     "amplitude": 0.00081,
+     "phase": 158.173
+    },
+    {
+     "name": "2MO5",
+     "amplitude": 0.00035,
+     "phase": 245.456
+    }
+   ]
+  },
+  {
+   "id": "ticon/port_nolloth-701-zaf-uhslc_fd",
+   "name": "Port Nolloth",
+   "lat": -29.283,
+   "lon": 16.85,
+   "epoch": {
+    "start": "2000-01-27",
+    "end": "2016-05-31"
+   },
+   "msl": 1.168,
+   "lat_datum": 0.099,
+   "attribution": "Neaps tide database (https://github.com/openwatersio/tide-database). Source: Hart-Davis, M., Dettmering, D., Seitz, F. (2025), TICON-4: TIdal CONstants based on GESLA-4 sea-level records, SEANOE, https://doi.org/10.17882/109129. Licensed CC BY 4.0 (https://creativecommons.org/licenses/by/4.0/). Modified: see https://github.com/openwatersio/tide-database#modifications-to-source-data",
+   "license": "cc-by-4.0",
+   "source_url": "https://www.seanoe.org/data/00980/109129/",
+   "constituents": [
+    {
+     "name": "M2",
+     "amplitude": 0.55014,
+     "phase": 31.892
+    },
+    {
+     "name": "N2",
+     "amplitude": 0.12167,
+     "phase": 21.608
+    },
+    {
+     "name": "S2",
+     "amplitude": 0.23322,
+     "phase": 49.776
+    },
+    {
+     "name": "K2",
+     "amplitude": 0.06544,
+     "phase": 46.607
+    },
+    {
+     "name": "2N2",
+     "amplitude": 0.01779,
+     "phase": 3.04
+    },
+    {
+     "name": "S1",
+     "amplitude": 0.00674,
+     "phase": 32.601
+    },
+    {
+     "name": "K1",
+     "amplitude": 0.05398,
+     "phase": 91.725
+    },
+    {
+     "name": "P1",
+     "amplitude": 0.01395,
+     "phase": 90.739
+    },
+    {
+     "name": "O1",
+     "amplitude": 0.019,
+     "phase": 221.844
+    },
+    {
+     "name": "Q1",
+     "amplitude": 0.0095,
+     "phase": 203.887
+    },
+    {
+     "name": "M1",
+     "amplitude": 0.00154,
+     "phase": 350.143
+    },
+    {
+     "name": "M4",
+     "amplitude": 0.00789,
+     "phase": 75.81
+    },
+    {
+     "name": "MM",
+     "amplitude": 0.0008,
+     "phase": 73.436
+    },
+    {
+     "name": "MF",
+     "amplitude": 0.00614,
+     "phase": 349.453
+    },
+    {
+     "name": "SA",
+     "amplitude": 0.02694,
+     "phase": 312.121
+    },
+    {
+     "name": "SSA",
+     "amplitude": 0.01181,
+     "phase": 323.395
+    },
+    {
+     "name": "T2",
+     "amplitude": 0.01313,
+     "phase": 50.358
+    },
+    {
+     "name": "J1",
+     "amplitude": 0.00492,
+     "phase": 113.86
+    },
+    {
+     "name": "L2",
+     "amplitude": 0.01428,
+     "phase": 31.439
+    },
+    {
+     "name": "R2",
+     "amplitude": 0.00285,
+     "phase": 43.295
+    },
+    {
+     "name": "2Q1",
+     "amplitude": 0.00228,
+     "phase": 172.177
+    },
+    {
+     "name": "MSF",
+     "amplitude": 0.00115,
+     "phase": 258.01
+    },
+    {
+     "name": "MSQM",
+     "amplitude": 0.00226,
+     "phase": 3.743
+    },
+    {
+     "name": "EP2",
+     "amplitude": 0.00447,
+     "phase": 350.913
+    },
+    {
+     "name": "M3",
+     "amplitude": 0.00767,
+     "phase": 291.165
+    },
+    {
+     "name": "MU2",
+     "amplitude": 0.02033,
+     "phase": 7.859
+    },
+    {
+     "name": "MTM",
+     "amplitude": 0.00165,
+     "phase": 314.522
+    },
+    {
+     "name": "NU2",
+     "amplitude": 0.02297,
+     "phase": 21.432
+    },
+    {
+     "name": "LAMBDA2",
+     "amplitude": 0.00334,
+     "phase": 12.768
+    },
+    {
+     "name": "MN4",
+     "amplitude": 0.0025,
+     "phase": 15.166
+    },
+    {
+     "name": "MS4",
+     "amplitude": 0.00383,
+     "phase": 153.994
+    },
+    {
+     "name": "MKS2",
+     "amplitude": 0.00221,
+     "phase": 64.819
+    },
+    {
+     "name": "N4",
+     "amplitude": 0.00019,
+     "phase": 269.707
+    },
+    {
+     "name": "M6",
+     "amplitude": 0.00073,
+     "phase": 256.861
+    },
+    {
+     "name": "M8",
+     "amplitude": 0.00016,
+     "phase": 237.135
+    },
+    {
+     "name": "S4",
+     "amplitude": 0.00298,
+     "phase": 146.19
+    },
+    {
+     "name": "OO1",
+     "amplitude": 0.00504,
+     "phase": 149.233
+    },
+    {
+     "name": "S3",
+     "amplitude": 0.00315,
+     "phase": 98.148
+    },
+    {
+     "name": "MA2",
+     "amplitude": 0.00347,
+     "phase": 10.896
+    },
+    {
+     "name": "MB2",
+     "amplitude": 0.00166,
+     "phase": 6.646
+    },
+    {
+     "name": "T3",
+     "amplitude": 0.00064,
+     "phase": 114.452
+    },
+    {
+     "name": "R3",
+     "amplitude": 0.00057,
+     "phase": 343.632
+    },
+    {
+     "name": "RHO1",
+     "amplitude": 0.00172,
+     "phase": 206.928
+    },
+    {
+     "name": "SGM",
+     "amplitude": 0.00219,
+     "phase": 2.478
+    },
+    {
+     "name": "3L2",
+     "amplitude": 0.00262,
+     "phase": 113.146
+    },
+    {
+     "name": "3N2",
+     "amplitude": 0.00158,
+     "phase": 115.638
+    },
+    {
+     "name": "2SM2",
+     "amplitude": 0.00159,
+     "phase": 206.664
+    },
+    {
+     "name": "2MS6",
+     "amplitude": 0.00307,
+     "phase": 46.976
+    },
+    {
+     "name": "2MK5",
+     "amplitude": 0.0035,
+     "phase": 94.028
+    },
+    {
+     "name": "2MO5",
+     "amplitude": 0.00187,
+     "phase": 175.965
+    }
+   ]
+  }
+ ]
+}

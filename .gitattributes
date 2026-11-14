@@ -1,0 +1,4 @@
+# These immutable research artifacts are verified by byte hashes across OSes.
+coastal_boundary.cjs -text
+data/tide-stations.json -text whitespace=cr-at-eol
+research/berg-swot.csv -text

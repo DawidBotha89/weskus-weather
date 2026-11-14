@@ -1,0 +1,29 @@
+# Berg River water-level trial and Langebaan evidence gaps
+
+14 November 2026. Research alongside the existing weather forecast and coastal tide calculation. No automatic promotion, paid API, local tide timetable or navigation claim.
+
+## Berg: a fixed experiment that can be checked prospectively
+
+The collector reads NASA/CNES SWOT RiverSP **Version D**, reach **12602000013**, reference -32.7900528,18.1671095, through [PO.DAAC Hydrocron](https://podaac.github.io/hydrocron/timeseries/). NASA-led mission data use [CC0 unless otherwise marked](https://science.data.nasa.gov/about/license); credit NASA/CNES SWOT and [the RiverSP D dataset](https://doi.org/10.5067/SWOT-RIVERSP-D). The source is checked every six hours. Satellites pass infrequently: a fresh download does not mean a fresh measurement. The latest successful sample at implementation was 1 November 2026, quality **suspect**.
+
+`berg-model.json` freezes a transfer from the site's TICON-4 coastal boundary to the satellite reach-average height relative to **EGM2008**. This is a statistical level reference, not LAT, surveyed gauge zero or water depth. TICON-4 (Hart-Davis, Dettmering and Seitz, 2025, [doi:10.17882/109129](https://doi.org/10.17882/109129)) is CC BY 4.0; credits accompany the constants. The MIT-licensed Neaps predictor is pinned to 0.11.0. Constant bytes, helper bytes and installed predictor version are checked at runtime.
+
+The original archive is `berg-swot.csv`, SHA256 `ffa7d742983ef03efcd3989811bab4b89ba5f637c3b8e35ee2a2fd3730536510`. It contains 105 acquisitions: 101 suspect and four degraded, **zero good-quality acquisitions**. The 62 retained pre-2026 acquisitions train a lag search (0–120 minutes in five-minute steps), gain and intercept. The other 39 are historical holdout. Their RMSE was 0.174 m for the transfer, 0.317 m for coastal levels plus a training-only offset, and 0.242 m for the training mean. All 39 are suspect; these encouraging historical numbers are not proof of future accuracy or accurate high/low timing. The fitted 55-minute parameter is not a universal delay anywhere along the river.
+
+Each hourly run saves immutable candidate/coast-aligned/training-mean triples 6–30 hours before validity in `data/estuary-verification.json`. Historical observations cannot be backfilled into this score. Issue times record calculation, just before publication; Git commit time records public availability. Native Neaps point evaluation floors to ten-minute UTC bins; the 55-minute offset adds transitions between them. A five-minute preceding-bin lookup preserves this behavior (annual parity error below 0.000001 m), **not five-minute tide-timing accuracy**. Linear interpolation would change the fitted model.
+
+Only exact reach, collection, datum and position matches qualify. Good and suspect observations are scored separately; degraded/bad values are excluded. A corrected height, position, datum or quality flag excludes an earlier match while preserving its audit record. Omitted source rows cannot be distinguished from provider omissions and are retained with dates. No automated refit is performed. The version expires 13 January 2027; review before replacing it. Weather publication continues if this optional experiment fails, retaining original research timestamps and a degraded warning. Node installation is optional at refresh time; PR checks still require it.
+
+## Langebaan: do not turn sparse evidence into a local timetable
+
+Seven independent usable historical ICESat-2 ATL24 passes at the northern lagoon patch are insufficient for the predefined six-training/three-holdout split. The four relevant track catalogues still contain no 2025–2026 acquisitions. Thousands of photons in a pass are not thousands of independent tide observations. Satellite shoreline wet fraction is a different quantity and is not relabelled as water height.
+
+The best next target is a continuous logger series from the Saldanha Bay Water Quality Forum Trust/Kropz monitoring programme, with gauge location, zero, units, timezone, exposure/relocation history, QC and reuse terms. Fit only after at least 60 useful days and reserve 30 continuous independent days for validation; include spring/neap cycles and diverse winds. No local delay is added to the coastal tide in the meantime.
+
+## New river gauge leads and why they are not calibration truth yet
+
+The official lower estuary station is **G1T074, Laaiplek**, not G1H074. [DWS tidal station catalogue](https://www.dws.gov.za/Hydrology/Verified/dwafapp2_wma/WMA6_Breede-Olifants_Tidal.pdf). The verified form lists data through February 2026, but its download currently returns a KISTERS connection failure rather than measurements.
+
+The public DWS unverified pages provide a month of 12-minute readings through their ordinary Data button: [G1H023 Jantjiesfontein](https://www.dws.gov.za/Hydrology/Unverified/FlowDetail/8554) and [G1H075 Misverstand](https://www.dws.gov.za/Hydrology/Unverified/FlowDetail/2315). Jantjiesfontein is around 51 km upstream, not a Velddrif proxy. The inspected month contains severe discontinuities, including a 1.588 m jump in 12 minutes and a later change in mean level. Datum, timezone, sensor history and commercial redistribution permission are not confirmed. Raw samples remain local research and are not redistributed here. Misverstand discharge may eventually help account for river flow once its metadata is cleared.
+
+To graduate a local model: secure reusable, quality-controlled continuous local gauge data; survey/verify the vertical reference; evaluate independent high/low timing and height across spring/neap cycles, river flows and wind conditions; report missed events and uncertainty; explicitly review before changing the default. A numerical lagoon solver alone cannot replace missing bathymetry, boundary conditions and observations.
