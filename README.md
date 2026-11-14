@@ -17,3 +17,17 @@ Each source gets up to three attempts, with 20-second and 60-second delays. Fail
 An independent Supabase watchdog targets minute 2 each hour, checks the feed served by the live site, records missed updates and retries failed publications. See [hourly operation and recovery](ops/README.md) for monitoring, credential rotation and deployment details.
 
 For each town and valid time we freeze the first pair seen 6–24 hours ahead. Both predictions must be available together. We match the exact UTC time to a named station within 15 km, retain a rolling 30 days, and compute mean absolute error separately for temperature and wind. The verification ledger records the issue dates, collection time, original predictions and matched observations. An empty sample has no error estimate. The trial can have gaps when observations, baselines or scheduled runs are missing. Keep interpreting different leads, local exposures and seasons separately before choosing a forecast for the site.
+
+## Langebaan station trial, 14 November 2026
+
+The optional `calibration` component applies a frozen, bounded temperature offset and wind multiplier to the Langebaan forecast, targeting **Geelbek AWS, 12.71 km away**. It is experimental station-proxy output, not validated beach or town-centre weather. The raw forecast and MET baseline are unchanged. Only temperature and scalar wind are adjusted, at the four daily times represented in the training sample, within the next 24 hours. No humidity, rainfall, wind direction, marine or tide correction is inferred.
+
+The ten-pair model expires **21 November 2026 at 19:02 UTC**. It does not automatically refit itself. Review prospective errors, obtain more independent weather days and nearby observations, then explicitly fit and version any replacement. The hourly raw feed continues after expiry. [Model, replay and limitations](research/geelbek-20261114/README.md).
+
+`data/candidate-verification.json` separately freezes raw/MET/candidate triples together 6–24 hours before validity, after fitting. All three must use the identical Geelbek observation. The original two-way ledger is never backfilled with hindsight. The feed publishes `candidate_scores` by model version, including pending counts and mean absolute errors; zero observations means no evidence yet. All three data files publish in one commit. The site's main forecast remains MET Norway until a later decision supported by evidence.
+
+## Station coverage, 14 November 2026
+
+The station collector now combines SAWS individual BUFR reports and original SAWS main-hour SYNOP bulletins from the WIS2 core GTS bridges. This restores 00/06/12/18 UTC observations and adds verified Malmesbury and Lamberts Bay Nortier reports, bringing coverage to five named proxies. All other towns explicitly remain unavailable; airports and distant stations are not silently assigned. Station history retains 72 hours for recovery, with original observation times and source attribution.
+
+Text bulletins use official OSCAR coordinates because they do not encode a position. Geelbek's OSCAR position differs by 1.61 km from the position in its BUFR reports. These are disclosed separately; text reports must not be treated as the identical training sensor for the existing correction. See [sources, decoding, coordinates and limitations](STATION-SOURCES.md).

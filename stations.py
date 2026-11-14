@@ -11,6 +11,7 @@ import xml.etree.ElementTree as ET
 import eccodes as ec
 
 from point_sources import component_cli, fetch, km, stamp, towns
+from station_synop import collect_bulletins, coverage, preference
 
 
 CACHE = "https://wis2globalcache.s3.us-east-1.amazonaws.com/"
@@ -24,7 +25,7 @@ STATIONS = {
     "langebaan": ("0-20000-0-68811", "Geelbek", 16),
     "vredendal": ("0-20000-0-68614", "Vredendal", 5),
     "malmesbury": ("0-20000-0-68715", "Malmesbury", 5),
-    "lambertsbaai": ("0-20000-0-68613", "Lamberts Bay", 10),
+    "lambertsbaai": ("0-20000-0-68613", "Lamberts Bay Nortier", 10),
 }
 
 
@@ -100,7 +101,9 @@ def decode(data, station, item, centre, max_km):
                 "temperature_c": round(temp - 273.15, 2) if temp is not None else None,
                 "humidity_percent": rh, "humidity_method": method, "wind_speed_ms": wind,
                 "wind_from_deg": None if wind == 0 or direction is None else direction % 360,
-                "source_url": CACHE + key, "source_etag": etag}
+                "source_url": CACHE + key, "source_etag": etag,
+                "source_name": "South African Weather Service via WMO WIS2 core",
+                "source_format": "BUFR4", "coordinate_source": "reported in BUFR message"}
     finally:
         ec.codes_release(handle)
 
@@ -110,7 +113,7 @@ def update_stations(previous, *, now=None):
     centres = towns()
     old = (previous or {}).get("towns", {})
     history = (previous or {}).get("history", {})
-    cutoff = stamp(now - timedelta(hours=12))
+    cutoff = stamp(now - timedelta(hours=72))
 
     def update(slug):
         station, _, limit = STATIONS[slug]
@@ -149,10 +152,29 @@ def update_stations(previous, *, now=None):
 
     with ThreadPoolExecutor(max_workers=3) as pool:
         results = list(pool.map(update, STATIONS))
+    latest = {slug: r for slug, r, _, _ in results if r}
+    archive = {slug: {r["observed_utc"]: r for r in records} for slug, _, records, _ in results}
+    bulletin_rows, bulletin_cache, bulletin_errors = collect_bulletins(previous, now, STATIONS, centres, humidity)
+    for slug, row in bulletin_rows:
+        when = row["observed_utc"]
+        if when < cutoff or when > stamp(now):
+            continue
+        existing = archive[slug].get(when)
+        # Prefer the richer original BUFR encoding on overlaps. Main-hour text
+        # readings normally fill gaps; corrections can revise prior text rows.
+        if existing and (existing.get("source_url", "").endswith(".bufr4") or preference(existing) > preference(row)):
+            continue
+        archive[slug][when] = row
+        if slug not in latest or when >= latest[slug]["observed_utc"]:
+            latest[slug] = row
+    for message in bulletin_errors:
+        print(f"SAWS SYNOP bulletin: {message}", file=sys.stderr)
     return {"source": "South African Weather Service via WMO WIS2 core",
-            "towns": {slug: r for slug, r, _, _ in results if r},
-            "history": {slug: history for slug, _, history, _ in results if history},
-            "refresh_errors": [slug for slug, _, _, failed in results if failed]}
+            "towns": latest,
+            "history": {slug: [rows[t] for t in sorted(rows)] for slug, rows in archive.items() if rows},
+            "history_retention_hours": 72, "bulletin_cache": bulletin_cache,
+            "coverage": coverage(centres, STATIONS, latest),
+            "refresh_errors": [slug for slug, _, _, failed in results if failed] + (["synop_bulletins"] if bulletin_errors else [])}
 
 
 if __name__ == "__main__":
