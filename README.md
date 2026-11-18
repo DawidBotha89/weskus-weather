@@ -1,5 +1,7 @@
 # West Coast weather
 
+Sea-temperature downloads automatically fall back between NOAA's original endpoint and its two documented public cloud mirrors, keeping the original dates and validation checks. See the [18 November outage and recovery notes](ops/OISST-RECOVERY-2026-11-18.md).
+
 ## Optional estuary experiment, 14 November 2026
 
 The hourly collector now also freezes Berg River reach-height predictions for future satellite checks. Install Node 22+, run `npm ci --ignore-scripts` and `npm test` for this component, alongside the Python instructions below. All four ledgers/snapshot files publish together. A failed research component does not stop weather publication. NASA is checked every six hours; satellite observations themselves are sparse, quality-flagged and **not current tide-gauge readings**. No local high/low times are supplied. [Method, licence, historical results and validation gates](research/ESTUARY-TRIAL.md).
