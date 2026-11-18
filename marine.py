@@ -15,6 +15,13 @@ from point_sources import component_cli, fetch, km, stamp, towns
 
 GFS = "https://noaa-gfs-bdp-pds.s3.amazonaws.com"
 OISST = "https://www.ncei.noaa.gov/data/sea-surface-temperature-optimum-interpolation/v2.1/access/avhrr"
+# All three locations are linked by NOAA's OISST CDR product page. They serve
+# the same version/grid, require no account, and may publish at different times.
+OISST_SOURCES = (
+    OISST,
+    "https://noaa-cdr-sea-surface-temp-optimum-interpolation-pds.s3.amazonaws.com/data/v2.1/avhrr",
+    "https://storage.googleapis.com/noaa-cdr-sea-surface-temp-optimum-interpolation/data/v2.1/avhrr",
+)
 # Towns point to named open water. GFS and OISST grid centres are offset half a cell.
 AREAS = {
     "columbine": ("Offshore west of Cape Columbine", (-32.75, 17.50), (-32.875, 17.625), ["paternoster"]),
@@ -122,25 +129,38 @@ def sample_sst(blob, day, url):
 
 
 def read_sst(now, cache, complete):
-    # A completed daily analysis covers 00–24 UTC. Prefer the latest published day.
+    # Newest day across all mirrors wins, rather than an older day on a preferred
+    # host. A host failure is skipped for this attempt, bounding outage latency.
+    unavailable, failures = set(), []
     for age in range(1, 6):
         day = (now - timedelta(days=age)).date()
-        base = f"{OISST}/{day:%Y%m}/oisst-avhrr-v02r01.{day:%Y%m%d}"
-        for suffix in ("_preliminary.nc", ".nc"):
-            url = base + suffix
-            try:
-                _, meta = fetch(url, limit=0, method="HEAD")
-            except HTTPError as exc:
-                if exc.code == 404:
-                    continue
-                raise
-            token = {"source_url": url, "etag": meta.get("ETag"), "last_modified": meta.get("Last-Modified")}
-            if complete and (token["etag"] or token["last_modified"]) and cache == token:
-                return token, None
-            headers = {"If-Match": token["etag"]} if token["etag"] else {}
-            data, _ = fetch(url, limit=8_000_000, headers=headers)
-            return token, sample_sst(data, day, url)
-    raise RuntimeError("No OISST analysis available for the five previous UTC days")
+        for source in OISST_SOURCES:
+            if source in unavailable:
+                continue
+            base = f"{source}/{day:%Y%m}/oisst-avhrr-v02r01.{day:%Y%m%d}"
+            for suffix in ("_preliminary.nc", ".nc"):
+                url = base + suffix
+                try:
+                    _, meta = fetch(url, limit=0, method="HEAD")
+                    token = {"source_url": url, "etag": meta.get("ETag"), "last_modified": meta.get("Last-Modified")}
+                    if complete and (token["etag"] or token["last_modified"]) and cache == token:
+                        return token, None
+                    headers = {"If-Match": token["etag"]} if token["etag"] else {}
+                    data, _ = fetch(url, limit=8_000_000, headers=headers)
+                    rows = sample_sst(data, day, url)
+                    if set(rows) != set(AREAS):
+                        raise ValueError("OISST is missing a reviewed offshore cell")
+                    return token, rows
+                except (OSError, ValueError, KeyError) as exc:
+                    if isinstance(exc, HTTPError) and exc.code == 404:
+                        continue  # A date/variant may not yet be published.
+                    failures.append(f"{source}: {type(exc).__name__}")
+                    unavailable.add(source)
+                    break
+        if len(unavailable) == len(OISST_SOURCES):
+            break
+    raise RuntimeError("No complete OISST analysis available from NOAA mirrors for the five previous UTC days. "
+                       + " | ".join(failures))
 
 
 def update_marine(previous, *, now=None):
