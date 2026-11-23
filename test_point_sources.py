@@ -100,7 +100,9 @@ class OffshoreTests(unittest.TestCase):
         prior = {"valid_utc": "2026-11-09T03:00:00Z", "swell_height_m": 1.2}
         previous = {"towns": {"langebaan": {"area_name": name, "wave": prior}}}
         sample = {"valid_utc": stamp(NOW), "latitude": -33.125, "longitude": 17.625, "temperature_c": 17}
-        with (patch.object(marine, "read_sst", return_value=({}, {"saldanha": sample})),
+        complete_sst = {area: {**sample, "latitude": spec[2][0], "longitude": spec[2][1]}
+                        for area, spec in marine.AREAS.items()}
+        with (patch.object(marine, "read_sst", return_value=({}, complete_sst)),
               patch.object(marine, "read_waves", side_effect=OSError("no waves")), redirect_stderr(io.StringIO())):
             result = marine.update_marine(previous, now=NOW)
         self.assertEqual(result["towns"]["langebaan"]["wave"], prior)
