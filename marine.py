@@ -1,11 +1,13 @@
 """NOAA primary ocean swell and daily offshore SST at fixed, named open-water cells."""
 
 from datetime import UTC, datetime, timedelta
+import csv
 import hashlib
 import io
 import math
 import sys
 from urllib.error import HTTPError
+from urllib.parse import quote
 
 import eccodes as ec
 import h5py
@@ -22,6 +24,9 @@ OISST_SOURCES = (
     "https://noaa-cdr-sea-surface-temp-optimum-interpolation-pds.s3.amazonaws.com/data/v2.1/avhrr",
     "https://storage.googleapis.com/noaa-cdr-sea-surface-temp-optimum-interpolation/data/v2.1/avhrr",
 )
+OISST_CREDIT = "NOAA/NCEI OISST v2.1 offshore analysis"
+CORALTEMP_CREDIT = "NOAA Coral Reef Watch CoralTemp v3.1 nighttime offshore analysis"
+CORALTEMP = "https://oceanwatch.pifsc.noaa.gov/erddap/griddap/CRW_sst_v3_1.csv"
 # Towns point to named open water. GFS and OISST grid centres are offset half a cell.
 AREAS = {
     "columbine": ("Offshore west of Cape Columbine", (-32.75, 17.50), (-32.875, 17.625), ["paternoster"]),
@@ -124,7 +129,7 @@ def sample_sst(blob, day, url):
             value = raw * scale + offset
             if raw != fill and math.isfinite(value) and -2.5 <= value <= 40:
                 rows[area] = {"valid_utc": stamp(valid), "temperature_c": round(value, 2), "latitude": lat,
-                              "longitude": lon, "source_url": url}
+                              "longitude": lon, "source_url": url, "source_name": OISST_CREDIT}
         return rows
 
 
@@ -163,6 +168,76 @@ def read_sst(now, cache, complete):
                        + " | ".join(failures))
 
 
+def read_coraltemp(now):
+    # A tiny subset from NOAA's independent 0.05-degree nighttime product.
+    # The reviewed offshore coordinates also lie exactly on its native grid.
+    query = "analysed_sst[(last)][(-33.375):5:(-32.125)][(17.625):5:(18.125)]"
+    url = CORALTEMP + "?" + quote(query, safe="")
+    blob, _ = fetch(url, limit=20_000)
+    records = list(csv.reader(io.StringIO(blob.decode("utf-8"))))
+    if (len(records) < 3 or records[0] != ["time", "latitude", "longitude", "analysed_sst"]
+            or records[1] != ["UTC", "degrees_north", "degrees_east", "degree_C"]):
+        raise ValueError("Unexpected CoralTemp columns or units")
+    cells, times = {}, set()
+    for record in records[2:]:
+        if len(record) != 4:
+            raise ValueError("Malformed CoralTemp row")
+        time, lat, lon, value = record
+        valid = datetime.fromisoformat(time.replace("Z", "+00:00"))
+        if valid.tzinfo is None or not timedelta(0) <= now - valid <= timedelta(days=5):
+            raise ValueError("CoralTemp analysis is stale or future dated")
+        point = (float(lat), float(lon))
+        if point in cells:
+            raise ValueError("Duplicate CoralTemp cell")
+        cells[point] = float(value)
+        times.add(stamp(valid))
+    if len(times) != 1:
+        raise ValueError("Mixed CoralTemp analysis dates")
+    rows = {}
+    for area, (_, _, point, _) in AREAS.items():
+        value = cells.get(point)
+        if value is None or not math.isfinite(value) or not -2.5 <= value <= 40:
+            raise ValueError("CoralTemp missing or invalid reviewed offshore cell")
+        rows[area] = {"valid_utc": next(iter(times)), "temperature_c": round(value, 2),
+                      "latitude": point[0], "longitude": point[1], "source_url": url,
+                      "source_name": CORALTEMP_CREDIT}
+    return {"source_url": url, "sha256": hashlib.sha256(blob).hexdigest()}, rows
+
+
+def read_resilient_sst(now, cache, complete, previous):
+    token, rows, failure = cache, None, None
+    primary_ok, fallback_ok = False, False
+    try:
+        token, rows = read_sst(now, cache, complete)
+        primary_ok = True
+    except (OSError, ValueError, KeyError, RuntimeError) as exc:
+        failure = str(exc)
+    # A cache hit must be checked by its original source date, not retrieval time.
+    existing = {area: previous[slugs[0]]["sst"] for area, (_, _, _, slugs) in AREAS.items()
+                if previous.get(slugs[0], {}).get("sst")}
+    selected = rows if rows is not None else existing
+
+    def age(data):
+        if set(data) != set(AREAS):
+            return timedelta.max
+        return max(now - datetime.fromisoformat(r["valid_utc"].replace("Z", "+00:00")) for r in data.values())
+
+    selected_age = age(selected)
+    if failure or selected_age > timedelta(days=3):
+        try:
+            alternative_token, alternative = read_coraltemp(now)
+            fallback_ok = True
+            if age(alternative) < selected_age:
+                token, rows, selected_age = alternative_token, alternative, age(alternative)
+                failure = None
+        except (OSError, ValueError, KeyError) as exc:
+            failure = f"CoralTemp: {exc}"
+    if (not primary_ok and not fallback_ok) or not timedelta(0) <= selected_age <= timedelta(days=5):
+        raise RuntimeError("No fresh complete offshore SST analysis. " + (failure or "Source too old"))
+    # Older successful source reads cannot overwrite newer retained readings.
+    return token, rows
+
+
 def update_marine(previous, *, now=None):
     now = now or datetime.now(UTC)
     previous = previous or {}
@@ -176,7 +251,8 @@ def update_marine(previous, *, now=None):
             prior = old.get(slug, {})
             result[slug] = {"area_name": name, **{k: prior.get(k) if prior.get("area_name") == name else None
                                                 for k in ("wave", "sst")}}
-    for field, reader in (("wave", read_waves), ("sst", read_sst)):
+    for field, reader in (("wave", read_waves),
+                          ("sst", lambda n, c, ready: read_resilient_sst(n, c, ready, result))):
         try:
             complete = all(result[s][field] for s in result)
             token, updates = reader(now, cache.get(field), complete)
@@ -193,8 +269,9 @@ def update_marine(previous, *, now=None):
         except (OSError, ValueError, KeyError, RuntimeError) as err:
             print(f"NOAA offshore {field}: {err}", file=sys.stderr)
             errors.append(field)
+    credits = sorted({r["sst"].get("source_name", OISST_CREDIT) for r in result.values() if r.get("sst")})
     return {"sources": {"wave": "NOAA/NCEP GFS Wave, first swell partition",
-                        "sst": "NOAA/NCEI daily OISST v2.1 offshore analysis"},
+                        "sst": "; ".join(credits) or OISST_CREDIT},
             "towns": result, "cache": cache, "refresh_errors": errors}
 
 

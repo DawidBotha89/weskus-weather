@@ -1,5 +1,7 @@
 # West Coast weather
 
+When OISST is delayed beyond three days or unavailable, a separately labelled NOAA Coral Reef Watch CoralTemp v3.1 nighttime analysis can supply fresher offshore SST at the same coordinates. Original dates, distances and the five-day hard limit remain enforced. See [23 November freshness recovery](ops/SST-FRESHNESS-2026-11-23.md).
+
 Sea-temperature downloads automatically fall back between NOAA's original endpoint and its two documented public cloud mirrors, keeping the original dates and validation checks. See the [18 November outage and recovery notes](ops/OISST-RECOVERY-2026-11-18.md).
 
 ## Optional estuary experiment, 14 November 2026
